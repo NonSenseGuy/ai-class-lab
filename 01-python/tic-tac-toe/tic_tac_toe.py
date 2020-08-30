@@ -1,10 +1,13 @@
 import re
+import random
 
 _PLAYER = "player"
 _MACHINE = "machine"
 
 _PLAYER_SYMBOL = "x"
 _MACHINE_SYMBOL = "o"
+
+_WINNERS_COMB = ((0,1,2), (3,4,5), (6,7,8), (0,3,6), (1,4,7), (2,5,8), (0,4,8), (2,4,6))
 
 class TicTacToeGame():
   def __init__(self):
@@ -14,6 +17,11 @@ class TicTacToeGame():
     self.winner = None
 
   def is_over(self): # TODO: Finish this function by adding checks for a winning game (rows, columns, diagonals)
+    for combination in _WINNERS_COMB:
+      if self.board[combination[0]] == self.board[combination[1]] == self.board[combination[2]] != None:
+        self.winner = _PLAYER if self.board[combination[0]] == _PLAYER_SYMBOL else _MACHINE
+        self.is_game_over = True
+        return True
     return self.board.count(None) == 0
 
   def play(self):
@@ -51,26 +59,31 @@ class TicTacToeGame():
 
   def machine_turn(self):
     # TODO: Implement this function to make the machine choose a random cell (use random module)
-    # The result of this function should be that self.board now has one more random cell occupied
-
-    for i, cell in enumerate(self.board):
-      if cell is None:
-        self.board[i] = _MACHINE_SYMBOL
-        break
+    # The result of this function should be that self.board now has one more random cell occupied 
+    rand = random.choice([x for x in range(len(self.board)) if self.board[x] is None])
+    self.board[rand] = _MACHINE_SYMBOL
 
   def format_board(self):
-    # TODO: Implement this function, it must be able to print the board in the following format:
-    #  x|o| 
-    #   | | 
-    #   | | 
-    return self.board
+    x=1
+    for i in range(len(self.board)):
+        end = ' | '
+        if x%3 == 0:
+            end = ' \n'
+            if i != 1: end+='---------\n'
+        char=' '
+        value=self.board[i]
+        if value in (_MACHINE_SYMBOL, _PLAYER_SYMBOL): char=value
+        x+=1
+        print(char,end=end)
 
   def print(self):
     print("Player turn:" if self.turn == _MACHINE else "Machine turn:")
-    print(self.format_board())
-    print()
+    self.format_board()
 
   def print_result(self):
     # TODO: Implement this function in order to print the result based on the self.winner
-
-    pass
+    if self.winner is None:
+      print("Draw")
+    else:
+      print("{} is the winner".format(self.winner))
+  
