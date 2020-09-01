@@ -69,7 +69,7 @@ class TicTacToeGame():
         end = ' | '
         if x%3 == 0:
             end = ' \n'
-            if i != 1: end+='---------\n'
+            if i != 1 and i != len(self.board)-1: end+='---------\n'
         char=' '
         value=self.board[i]
         if value in (_MACHINE_SYMBOL, _PLAYER_SYMBOL): char=value
